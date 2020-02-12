@@ -1,15 +1,11 @@
-import React, {Component} from 'react';
-import {Card, CardImg, CardImgOverlay, CardBody, CardText, CardTitle} from 'reactstrap';
+import React from 'react';
+import {Card, CardImg, CardBody, CardText, CardTitle} from 'reactstrap';
 
-class DishDetail extends Component{
 
-    render() {
-        const dish = this.props.selectedDish;
 
+    function RenderDish({dish}){
         if(dish != null){
             return(
-                <div className="container">
-                    <div className="row">
                         <div className='col-12 col-md-5 m-1'>
                             <Card>
                                 <CardImg width="100%" object src={dish.image} alt={dish.name}/>
@@ -19,30 +15,44 @@ class DishDetail extends Component{
                                 </CardBody> 
                             </Card>
                         </div>
+            )
+        }
+    }
+
+    function RenderComments({comments}){
+        if(comments!=null){
+            return(
+                comments.map((comment, i) => {
+					return (
+						<ul className ='list-unstyled' key = {comment.id}>
+							<li>
+								<div>{comment.comment}</div>
+							    <div>{`-- ${comment.author} , ${new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day:'2-digit'}).format(new Date(Date.parse(comment.date)))}`}</div>
+							</li>
+						</ul>
+					)
+				})
+            )
+        }
+    }
+
+    
+        const DishDetail = (props)=>{
+            const dish = props.selectedDish;
+            if(dish===null||dish===undefined) return (<div></div>)
+            return(
+                <div className="container">
+                    <div className="row">
+                        <RenderDish dish = {dish}/>
                         <div className='col-12 col-md-5 m-1'>
                             <h4>Comments</h4>
-                                {dish.comments.map((comment,i)=>{
-                                    return(
-                                        <ul className='list-unstyled' key = {comment.id}>
-                                            <li>
-                                                <p>{comment.comment}</p>
-                                                <p>{`-- ${comment.author}, ${comment.date}`}</p>
-                                            </li>
-                                        </ul>
-                                    )
-                                })}
+                                <RenderComments comments = {dish.comments}/>
                         </div>
                     </div>
                 </div>
-                
-            );
+            )
         }
-        else{
-            return(
-                <div></div>
-            );
-        }
-    }
-}
+
+
 
 export default DishDetail;
